@@ -1,0 +1,171 @@
+.link-texts{
+  text-decoration: none;
+  color:white
+}
+
+.Nav {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2b4398;
+  color: #fff;
+  padding: 15px 20px;
+  z-index: 100;
+}
+
+.Nav-left,
+.Nav-right {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.Nav-left > *:not(:last-child) {
+  margin-right: 10px;
+}
+
+.Nav-separator {
+  width: 2px;
+  height: 30px;
+  background-color: #425fc8;
+  margin: 0 10px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar input {
+  width: 200px;
+  padding: 5px;
+  border-radius: 3px;
+  border: none;
+  margin-right: 5px;
+}
+
+.search-bar button {
+  padding: 5px 10px;
+  border-radius: 3px;
+  border: none;
+  background-color: #3352bf;
+  color: #fff;
+  cursor: pointer;
+}
+
+.Nav-right select {
+  margin-right: 40px;
+  padding: 5px;
+  border-radius: 3px;
+  border: none;
+  background-color: #3352bf;
+  color: #fff;
+}
+.filter-menu {
+  background-color: #3352bf;
+  padding: 8px;
+  border-radius: 5px;
+  margin-right: 30px;
+  position: relative;
+  display: inline-block;
+}
+
+.filter-menu .menu-toggle {
+  cursor: pointer;
+}
+
+.filter-menu .menu-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  z-index: 1;
+  left: auto;
+  right: 0;
+}
+
+.filter-menu.open .menu-content {
+  display: block;
+  left: auto;
+  right: 0;
+}
+
+.filter-menu .menu-toggle {
+  position: relative;
+}
+
+.filter-menu .menu-content select,
+.filter-menu .menu-content button {
+  margin-bottom: 8px;
+}
+
+.filter-menu .temperament-options {
+  display: block;
+  max-height: 200px; /* Ajusta la altura máxima deseada */
+  overflow-y: auto;
+  padding-top: 8px;
+}
+
+.filter-menu .temperament-option {
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.filter-menu .temperament-option:hover {
+  background-color: #b5b5b5;
+}
+
+.filter-menu .sort-order {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .Nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .Nav-left {
+    margin-bottom: 10px;
+  }
+
+  .Nav-center {
+    margin-bottom: 10px;
+  }
+
+  .Nav-right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .filter-menu .menu-toggle {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .filter-menu .menu-content {
+    position: static;
+    display: inline-block;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .filter-menu .menu-content select,
+  .filter-menu .menu-content button {
+    margin-bottom: 0;
+  }
+
+  .filter-menu .sort-order {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

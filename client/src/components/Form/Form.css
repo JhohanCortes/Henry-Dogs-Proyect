@@ -1,0 +1,103 @@
+.container {
+  top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+}
+.formContainer {
+  width: 400px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px 20px 20px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #3b5fe2;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #142c85;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  padding-right: 8px;
+  border: 1px solid #3f4f88;
+  border-radius: 4px;
+}
+
+.select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #3f4f88;
+  border-radius: 4px;
+}
+
+.selectedTemps {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.selectedTemp {
+  display: flex;
+  align-items: center;
+  background-color: #3b5fe2;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.selectedTemp span {
+  margin-right: 4px;
+}
+
+.removeButton {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.createButton {
+  background-color: #3b5fe2;
+  color: #ffffff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+.createButton:hover {
+  background-color: #5973cf;
+}
+
+@media screen and (max-width: 480px) {
+  .formContainer {
+    width: 100%;
+    padding: 10px;
+  }
+}
