@@ -17,9 +17,9 @@ const Landing = () => {
         <Link to="/form" className="landing-button">
           Register Your Breed!
         </Link>
-        <Link to="/random" className="landing-link">
+        {/* <Link to="/random" className="landing-link">
           Random Breed!
-        </Link>
+        </Link> */}
       </div>
       <img src={dogImage} alt="Facherito Dog" className="landing-image" />
     </div>

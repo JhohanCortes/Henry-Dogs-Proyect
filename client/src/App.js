@@ -6,7 +6,8 @@ import Detail from "./components/Detail/Detail";
 import Form from "./components/Form/Form";
 import Nav from "./components/Nav/Nav";
 import Footer from "./components/Footer/Footer";
-import RandomDog from "./components/RandomDog/RandomDog";
+// import RandomDog from "./components/RandomDog/RandomDog";
+import CreatedDogs from "./components/CreatedDogs/CreatedDogs";
 import "./App.css";
 
 function App() {
@@ -20,7 +21,8 @@ function App() {
         <Route path="/home/:id" component={Detail} />
         <Route exact path="/form" component={Form} />
         <Route path="/form/:id" component={Form} />
-        <Route exact path="/random" component={RandomDog} />
+        {/* <Route exact path="/random" component={RandomDog} /> */}
+        <Route exact path="/yourbreeds" component={CreatedDogs} />
 
       </div>
       <Footer />

@@ -12,6 +12,7 @@ import {
   DELETE_DOG,
   DELETE_DOG_ID,
   SET_RANDOM_BREED,
+  FILTER_BY_CREATED,
 } from "../actions/actions-types.js";
 
 const initialState = {
@@ -54,10 +55,19 @@ const reducer = (state = initialState, { type, payload }) => {
         dogs: [...state.dogs, payload],
       };
 
-    case   SET_RANDOM_BREED:
+    case SET_RANDOM_BREED:
       return {
         ...state,
         selectedDog: payload,
+      };
+
+    case FILTER_BY_CREATED:
+      const createdDogs = state.dogsCopy.filter(
+        (dog) => dog.createInDb === payload
+      );
+      return {
+        ...state,
+        dogs: createdDogs,
       };
 
     case FILTER_BY_TEMPERAMENT:

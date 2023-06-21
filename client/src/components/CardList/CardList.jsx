@@ -1,14 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./CardList.css";
-import Card from "../Card/Card"
+import Card from "../Card/Card";
 
-const CardList = ({ allDogs }) => {
+const CardList = ({ allDogs, onDogClick }) => {
   return (
     <div className="card-list">
       {allDogs.map((dog) => (
-        <Link to={`/home/${dog.id}`} key={dog.id}>
           <Card
+            onDogClick={onDogClick}
+            id = {dog.id}
+            ket= {dog.key}
             name={dog.name}
             age={dog.age}
             image={dog.image}
@@ -16,7 +18,6 @@ const CardList = ({ allDogs }) => {
             weight={dog.weight}
             temperament={dog.temperament}
           />
-        </Link>
       ))}
     </div>
   );

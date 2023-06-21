@@ -92,6 +92,7 @@
   display: block;
   left: auto;
   right: 0;
+  top: 35px;
 }
 
 .filter-menu .menu-toggle {

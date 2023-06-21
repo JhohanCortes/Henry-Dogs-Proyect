@@ -11,7 +11,8 @@ import {
   FILTER_BY_NAME,
   DELETE_DOG,
   DELETE_DOG_ID,
-  SET_RANDOM_BREED
+  SET_RANDOM_BREED,
+  FILTER_BY_CREATED
 } from "./actions-types";
 import axios from "axios";
 
@@ -95,6 +96,14 @@ export const getRandomBreed = () => {
     }
   };
 };
+
+export const filterByCreated = (payload) => {
+  return {
+    type: FILTER_BY_CREATED,
+    payload,
+  };
+};
+
 
 export const FilterByTemperament = (payload) => {
   return {

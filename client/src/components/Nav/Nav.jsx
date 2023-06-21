@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getByName, FilterByWeight, FilterByHeight, FilterByOrigin, FilterByTemperament, FilterByName, getTemperaments } from "../../redux/actions/actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getByName,
+  FilterByWeight,
+  FilterByHeight,
+  FilterByOrigin,
+  FilterByTemperament,
+  FilterByName,
+  getTemperaments,
+} from "../../redux/actions/actions";
 import "./Nav.css";
 
 const Nav = () => {
@@ -10,6 +18,7 @@ const Nav = () => {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dispatch = useDispatch();
+  const temperaments = useSelector((state) => state.temperaments);
 
   useEffect(() => {
     dispatch(getTemperaments());
@@ -59,7 +68,10 @@ const Nav = () => {
       dispatch(FilterByHeight());
     } else if (selectedFilter === "temperament") {
       handleFilterByTemperament(searchQuery);
+    } else if (selectedFilter === "origin") {
+      handleFilterByOrigin();
     }
+    setSelectedFilter(null); // Reset selected filter after applying
   };
 
   return (
@@ -71,14 +83,6 @@ const Nav = () => {
         <div className="Nav-separator"></div>
         <Link to="/form" className="link-texts">
           Register dog
-        </Link>
-        <div className="Nav-separator"></div>
-        <Link to="/form" className="link-texts">
-          Your dogs
-        </Link>
-        <div className="Nav-separator"></div>
-        <Link to="/random" className="link-texts">
-          Random dog
         </Link>
       </div>
       <div className="Nav-center">
@@ -107,20 +111,32 @@ const Nav = () => {
               <option value="weight">Weight</option>
               <option value="height">Height</option>
               <option value="temperament">Temperament</option>
+              <option value="origin">Origin</option>
             </select>
-            {selectedFilter && selectedFilter === "temperament" && (
-              <>
-                <select
-                  value={selectedOrigin}
-                  onChange={(event) => setSelectedOrigin(event.target.value)}
-                >
-                  <option value="">Select Origin</option>
-                  <option value="created">Created</option>
-                  <option value="api">API</option>
-                </select>
-                <button onClick={handleFilterByOrigin}>Apply Origin</button>
-              </>
+            {selectedFilter === "temperament" && (
+              <select
+                value={searchQuery}
+                onChange={(event) => handleFilterByTemperament(event.target.value)}
+              >
+                <option value="">Select Temperament</option>
+                {temperaments.map((temperament) => (
+                  <option key={temperament.id} value={temperament.name}>
+                    {temperament.name}
+                  </option>
+                ))}
+              </select>
             )}
+            {selectedFilter === "origin" && (
+              <select
+                value={selectedOrigin}
+                onChange={(event) => setSelectedOrigin(event.target.value)}
+              >
+                <option value="">Select Origin</option>
+                <option value="created">Created</option>
+                <option value="api">API</option>
+              </select>
+            )}
+
             <button onClick={handleApplyFilter}>Apply Filter</button>
           </div>
         </div>
