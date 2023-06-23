@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./Home.css";
 import CardList from "../CardList/CardList";
 import { useDispatch, useSelector } from "react-redux";
-import { getDogs, getTemperaments, FilterByTemperament } from "../../redux/actions/actions";
+import {
+  getDogs,
+  getTemperaments,
+  FilterByTemperament,
+} from "../../redux/actions/actions";
 import cheems from "../../recourses/Loadming.png";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -35,7 +39,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <div className="pagination">
-      <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
         Previous
       </button>
       {getPageNumbers().map((page, index) => (
@@ -47,7 +54,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
         Next
       </button>
     </div>
@@ -59,7 +69,6 @@ const Home = () => {
   const allDogs = useSelector((state) => state.dogs);
   const [selectedTemperament, setSelectedTemperament] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingDog, setIsLoadingDog] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const cardsToShow = 16; // Establece la cantidad de tarjetas a mostrar
 
@@ -76,10 +85,6 @@ const Home = () => {
   useEffect(() => {
     dispatch(FilterByTemperament(selectedTemperament));
   }, [dispatch, selectedTemperament]);
-
-  const handleDogClick = () => {
-    setIsLoadingDog(true);
-  };
 
   const totalDogs = allDogs.length;
   const totalPages = Math.ceil(totalDogs / cardsToShow);
@@ -102,8 +107,12 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <CardList allDogs={currentDogs} onDogClick={handleDogClick} />
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+          <CardList allDogs={currentDogs} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </>
       )}
     </div>

@@ -4,6 +4,9 @@ const router = Router();
 
 router.post('/', async (req, res) => {
     const { name, height, weight, age, image, temperament, created } = req.body;
+    const perro = req.body
+    console.log(perro)
+
     try {
         if(!name || !height || !weight || !age || !image || !temperament){
             throw Error("Put all the required information");

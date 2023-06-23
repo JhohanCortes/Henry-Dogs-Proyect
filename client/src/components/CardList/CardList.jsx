@@ -1,14 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import "./CardList.css";
 import Card from "../Card/Card";
 
-const CardList = ({ allDogs, onDogClick }) => {
+const CardList = ({ allDogs }) => {
   return (
     <div className="card-list">
       {allDogs.map((dog) => (
           <Card
-            onDogClick={onDogClick}
             id = {dog.id}
             ket= {dog.key}
             name={dog.name}

@@ -8,9 +8,12 @@ import {
   FilterByOrigin,
   FilterByTemperament,
   FilterByName,
+  FilterByAge,
   getTemperaments,
 } from "../../redux/actions/actions";
 import "./Nav.css";
+
+import landingBack from "../../recourses/footprint.png"
 
 const Nav = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,21 +71,26 @@ const Nav = () => {
       dispatch(FilterByHeight());
     } else if (selectedFilter === "temperament") {
       handleFilterByTemperament(searchQuery);
-    } else if (selectedFilter === "origin") {
-      handleFilterByOrigin();
+    } else if (selectedFilter === "age") {
+      dispatch(FilterByAge());
     }
-    setSelectedFilter(null); // Reset selected filter after applying
+
+    setSelectedFilter(null);
   };
 
   return (
     <nav className="Nav">
       <div className="Nav-left">
+
+        <Link to="/" className="link-texts">
+          <img src={landingBack} alt="landingBack" />
+        </Link>
         <Link to="/home" className="link-texts" onClick={handleHomeClick}>
           Home
         </Link>
         <div className="Nav-separator"></div>
         <Link to="/form" className="link-texts">
-          Register dog
+          Register breed
         </Link>
       </div>
       <div className="Nav-center">
@@ -111,32 +119,35 @@ const Nav = () => {
               <option value="weight">Weight</option>
               <option value="height">Height</option>
               <option value="temperament">Temperament</option>
-              <option value="origin">Origin</option>
+              <option value="age">Age</option>
             </select>
+            <select
+              value={selectedOrigin}
+              onChange={(event) => {
+                setSelectedOrigin(event.target.value);
+                handleFilterByOrigin();
+              }}
+            >
+              <option value="">Origin</option>
+              <option value="api">Api</option>
+              <option value="created">Created</option>
+            </select>
+
             {selectedFilter === "temperament" && (
               <select
                 value={searchQuery}
-                onChange={(event) => handleFilterByTemperament(event.target.value)}
+                onChange={(event) =>
+                  handleFilterByTemperament(event.target.value)
+                }
               >
                 <option value="">Select Temperament</option>
                 {temperaments.map((temperament) => (
                   <option key={temperament.id} value={temperament.name}>
-                    {temperament.name}
+                    {temperament}
                   </option>
                 ))}
               </select>
             )}
-            {selectedFilter === "origin" && (
-              <select
-                value={selectedOrigin}
-                onChange={(event) => setSelectedOrigin(event.target.value)}
-              >
-                <option value="">Select Origin</option>
-                <option value="created">Created</option>
-                <option value="api">API</option>
-              </select>
-            )}
-
             <button onClick={handleApplyFilter}>Apply Filter</button>
           </div>
         </div>

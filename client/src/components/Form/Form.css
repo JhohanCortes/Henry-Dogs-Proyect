@@ -6,11 +6,12 @@
   min-height: 100vh;
   position: relative;
 }
+
 .formContainer {
   width: 400px;
   background-color: #ffffff;
   border-radius: 8px;
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -40,9 +41,18 @@
 .input {
   width: 100%;
   padding: 8px;
-  padding-right: 8px;
   border: 1px solid #3f4f88;
   border-radius: 4px;
+}
+
+.rangeInputs {
+  display: flex;
+  align-items: center;
+}
+
+.rangeSeparator {
+  margin: 0 4px;
+  color: #3f4f88;
 }
 
 .select {
@@ -93,6 +103,12 @@
 
 .createButton:hover {
   background-color: #5973cf;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 4px;
 }
 
 @media screen and (max-width: 480px) {

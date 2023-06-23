@@ -5,17 +5,40 @@ import "./Form.css";
 
 const Form = () => {
   const dispatch = useDispatch();
-  const [input, setInput] = useState({
-    id: "",
+  const [inputs, setInputs] = useState({
     name: "",
+    ageMin: "",
+    ageMax: "",
+    heightMin: "",
+    heightMax: "",
+    weightMin: "",
+    weightMax: "",
+    image: "",
+    temperament: [],
+  });
+
+  const [error, setError] = useState({
+    name: "",
+    age: "",
     height: "",
     weight: "",
-    age: "",
-    image: "",
-    createInDb: "",
-    temperament: [],
-    temperaments: [],
   });
+
+  const validate = (inputs) => {
+    const { name, ageMin, ageMax, heightMin, heightMax, weightMin, weightMax } =
+      inputs;
+    const errors = {};
+    if (!/^[a-zA-Z\s]{5,25}$/.test(name))
+      errors.name =
+        "Breed name must have at least 5 characters and a maximum of 25 characters";
+    if (ageMin > ageMax)
+      errors.age = "Minimum age cannot be greater than the maximum";
+    if (heightMin > heightMax)
+      errors.height = "Minimum height cannot be greater than the maximum";
+    if (weightMin > weightMax)
+      errors.weight = "Minimum weight cannot exceed the maximum";
+    return errors;
+  };
 
   useEffect(() => {
     dispatch(getTemperaments());
@@ -30,43 +53,64 @@ const Form = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setInput((prevInput) => ({
-      ...prevInput,
+    setInputs((prevInputs) => ({
+      ...prevInputs,
       [name]: value,
     }));
+    setError(validate({ ...inputs, [name]: value }));
   };
 
   const handleSelect = (event) => {
     const selectedTemperament = event.target.value;
-    setInput((prevInput) => ({
-      ...prevInput,
-      temperament: [...prevInput.temperament, selectedTemperament],
-      temperaments: Array.isArray(prevInput.temperaments)
-        ? [...prevInput.temperaments, selectedTemperament]
-        : [selectedTemperament],
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      temperament: [...prevInputs.temperament, selectedTemperament],
     }));
     setSelectedTemps((prevSelectedTemperaments) => [
       ...prevSelectedTemperaments,
       selectedTemperament,
     ]);
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(postDog(input));
-    setInput({
-      id: "",
+    const ageRange = `${inputs.ageMin} - ${inputs.ageMax}`;
+    const heightRange = `${inputs.heightMin} - ${inputs.heightMax}`;
+    const weightRange = `${inputs.weightMin} - ${inputs.weightMax}`;
+  
+    const errors = validate(inputs);
+  
+    if (Object.keys(errors).length > 0) {
+      // Si hay errores, mostrar mensaje de error y no enviar el formulario
+      setError(errors);
+      return;
+    }
+  
+    dispatch(
+      postDog({
+        name: inputs.name,
+        image: inputs.image,
+        temperament: inputs.temperament,
+        age: ageRange,
+        height: heightRange,
+        weight: weightRange,
+      })
+    );
+  
+    setInputs({
       name: "",
-      height: "",
-      weight: "",
-      age: "",
+      ageMin: "",
+      ageMax: "",
+      heightMin: "",
+      heightMax: "",
+      weightMin: "",
+      weightMax: "",
       image: "",
-      createInDb: "",
       temperament: [],
-      temperaments: [],
     });
+    setSelectedTemps([]);
+    setError({});
   };
-
+  
   const handleRemove = (temperament) => {
     setSelectedTemps((prevSelectedTemps) =>
       prevSelectedTemps.filter((temp) => temp !== temperament)
@@ -77,98 +121,128 @@ const Form = () => {
     <div className="container">
       <div className="formContainer">
         <form className="form" onSubmit={handleSubmit}>
-          <div>
-            <h1 className="title">Register a breed!</h1>
-            <div className="field">
-              <label className="label">Breed:</label>
+          <h1 className="title">Register a Breed!</h1>
+          <div className="field">
+            <label className="label">Breed Name:</label>
+            <input
+              type="text"
+              value={inputs.name}
+              name="name"
+              onChange={handleChange}
+              className="input"
+              placeholder="Enter the breed name"
+            />
+            {error.name && <span className="error">{error.name}</span>}
+          </div>
+          <div className="field">
+            <label className="label">Age Range:</label>
+            <div className="rangeInputs">
               <input
-                type="text"
-                value={input.name}
-                name="name"
+                type="number"
+                value={inputs.ageMin}
+                name="ageMin"
                 onChange={handleChange}
-                className="input"
-                placeholder="Breed name"
+                className="input rangeInput"
+                placeholder="Min Age"
+              />
+              <span className="rangeSeparator">-</span>
+              <input
+                type="number"
+                value={inputs.ageMax}
+                name="ageMax"
+                onChange={handleChange}
+                className="input rangeInput"
+                placeholder="Max Age"
               />
             </div>
-            <div className="field">
-              <label className="label">Height:</label>
+            {error.age && <span className="error">{error.age}</span>}
+          </div>
+          <div className="field">
+            <label className="label">Height Range:</label>
+            <div className="rangeInputs">
               <input
-                type="text"
-                value={input.height}
-                name="height"
+                type="number"
+                value={inputs.heightMin}
+                name="heightMin"
                 onChange={handleChange}
-                className="input"
-                placeholder="Min height - Max height"
+                className="input rangeInput"
+                placeholder="Min Height"
+              />
+              <span className="rangeSeparator">-</span>
+              <input
+                type="number"
+                value={inputs.heightMax}
+                name="heightMax"
+                onChange={handleChange}
+                className="input rangeInput"
+                placeholder="Max Height"
               />
             </div>
-            <div className="field">
-              <label className="label">Weight:</label>
+            {error.height && <span className="error">{error.height}</span>}
+          </div>
+          <div className="field">
+            <label className="label">Weight Range:</label>
+            <div className="rangeInputs">
               <input
-                type="text"
-                value={input.weight}
-                name="weight"
+                type="number"
+                value={inputs.weightMin}
+                name="weightMin"
                 onChange={handleChange}
-                className="input"
-                placeholder="Min weight - Max weight"
+                className="input rangeInput"
+                placeholder="Min Weight"
+              />
+              <span className="rangeSeparator">-</span>
+              <input
+                type="number"
+                value={inputs.weightMax}
+                name="weightMax"
+                onChange={handleChange}
+                className="input rangeInput"
+                placeholder="Max Weight"
               />
             </div>
-            <div className="field">
-              <label className="label">Life Expectancy:</label>
-              <input
-                type="text"
-                value={input.age}
-                name="age"
-                onChange={handleChange}
-                className="input"
-                placeholder="Min - Max"
-              />
-            </div>
-            <div className="field">
-              <label className="label">Image URL:</label>
-              <input
-                type="text"
-                value={input.image}
-                name="image"
-                onChange={handleChange}
-                className="input"
-                placeholder="http://example.com"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="temperament" className="label">
-                Temperament:
-              </label>
-              <select
-                id="temperaments"
-                onChange={handleSelect}
-                className="select"
-              >
-                <option value="">Select</option>
-                {filteredTemps?.sort().map((temp) => (
-                  <option key={temp} value={temp}>
+            {error.weight && <span className="error">{error.weight}</span>}
+          </div>
+          <div className="field">
+            <label className="label">Image URL:</label>
+            <input
+              type="text"
+              value={inputs.image}
+              name="image"
+              onChange={handleChange}
+              className="input"
+              placeholder="Enter the image URL"
+            />
+          </div>
+          <div className="field">
+            <label className="label">Temperament:</label>
+            <select className="select" value={filter} onChange={handleSelect}>
+              <option value="">Select a temperament</option>
+              {filteredTemps &&
+                filteredTemps.map((temp) => (
+                  <option value={temp} key={temp}>
                     {temp}
                   </option>
                 ))}
-              </select>
-              <div className="selectedTemps">
-                {selectedTemps?.sort().map((temp) => (
-                  <div key={temp?.id} className="selectedTemp">
-                    <span>{temp}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(temp)}
-                      className="removeButton"
-                    >
-                      x
-                    </button>
-                  </div>
-                ))}
-              </div>
+            </select>
+
+            <div className="selectedTemps">
+              {selectedTemps.map((temp) => (
+                <div className="selectedTemp" key={temp}>
+                  <span>{temp}</span>
+                  <button
+                    className="removeButton"
+                    onClick={() => handleRemove(temp)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
             </div>
-            <button type="submit" className="createButton">
-              Create
-            </button>
           </div>
+          <button type="submit" className="createButton">
+            Create Breed
+          </button>
         </form>
       </div>
     </div>

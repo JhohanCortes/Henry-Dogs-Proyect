@@ -2,7 +2,7 @@ const { Dog, Temperament } = require('../db.js');
 const { Op } = require('sequelize');
 const { getAllTemps } = require('./getAllTemps.js');
 
-const postDogs = async (name, height, weight, age, image, temperament, created) => {
+const postDogs = async (name, height, weight, age, image, temperament) => {
     const dogIn= await Dog.findAll({
         where: {
             name: {

@@ -1,3 +1,5 @@
+// actions.js
+
 import {
   GET_BY_ID,
   GET_DOGS,
@@ -9,12 +11,14 @@ import {
   FILTER_BY_HEIGHT,
   FILTER_BY_ORIGIN,
   FILTER_BY_NAME,
-  DELETE_DOG,
-  DELETE_DOG_ID,
+  FILTER_BY_AGE,
   SET_RANDOM_BREED,
-  FILTER_BY_CREATED
+  FILTER_BY_CREATED,
+  RESET_SELECTED_DOG, // Nueva acción de reset
 } from "./actions-types";
 import axios from "axios";
+
+  // acá se hacen las solicitudes a el backend
 
 export const getDogs = () => {
   return async (dispatch) => {
@@ -90,7 +94,7 @@ export const getRandomBreed = () => {
       const response = await axios.get("http://localhost:3001/dogs/random");
       const randomBreed = response.data; // Suponiendo que la API devuelve un objeto con los datos de la raza de perro aleatoria
       // Realiza alguna acción con la raza de perro aleatoria obtenida, como almacenarla en el estado de Redux
-      dispatch({ type:   SET_RANDOM_BREED, payload: randomBreed });
+      dispatch({ type: SET_RANDOM_BREED, payload: randomBreed });
     } catch (error) {
       console.error("Error occurred while fetching random breed:", error);
     }
@@ -103,7 +107,6 @@ export const filterByCreated = (payload) => {
     payload,
   };
 };
-
 
 export const FilterByTemperament = (payload) => {
   return {
@@ -138,26 +141,15 @@ export const FilterByName = (payload) => {
   };
 };
 
-export const deleteDog = (id) => async (dispatch) => {
-  try {
-    if (!id) {
-      throw new Error("Invalid ID");
-    }
-    const response = await axios.delete(
-      `http://localhost:3001/dogs/delete/${id}`
-    );
-    dispatch({
-      type: DELETE_DOG,
-      payload: response.data,
-    });
-    return response;
-  } catch (error) {
-    console.log(error);
-  }
+export const FilterByAge = (payload) => {
+  return {
+    type: FILTER_BY_AGE,
+    payload,
+  };
 };
 
-export const deleteDogId = () => {
+export const resetSelectedDog = () => {
   return {
-    type: DELETE_DOG_ID,
+    type: RESET_SELECTED_DOG,
   };
 };

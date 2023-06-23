@@ -1,7 +1,8 @@
 .app-pages {
   padding-top: 50px;
   height: 100%;
-  width: 100%;
+  min-height: 530px;
+
 }
 
 .App{

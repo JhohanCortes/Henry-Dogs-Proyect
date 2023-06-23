@@ -9,11 +9,13 @@ import {
   FILTER_BY_HEIGHT,
   FILTER_BY_ORIGIN,
   FILTER_BY_NAME,
-  DELETE_DOG,
-  DELETE_DOG_ID,
   SET_RANDOM_BREED,
   FILTER_BY_CREATED,
+  FILTER_BY_AGE,
+  RESET_SELECTED_DOG, // Nueva acción de reset
 } from "../actions/actions-types.js";
+
+// acá se hacen los cambios de estado y asi mismo actualizar el mismo
 
 const initialState = {
   dogs: [],
@@ -33,16 +35,19 @@ const reducer = (state = initialState, { type, payload }) => {
         dogs: payload,
         dogsCopy: payload,
       };
+
     case GET_TEMPERAMENTS:
       return {
         ...state,
         temperaments: payload,
       };
+
     case GET_BY_NAME:
       return {
         ...state,
         dogs: payload,
       };
+
     case GET_BY_ID:
       return {
         ...state,
@@ -71,55 +76,46 @@ const reducer = (state = initialState, { type, payload }) => {
       };
 
     case FILTER_BY_TEMPERAMENT:
-      const allDogs = state.dogsCopy; //? Traigo toda la copia de perros
+      const allDogs = state.dogsCopy;
       const filterDog =
         payload === "All"
           ? allDogs
-          : allDogs.filter((dog) => dog.temperament?.includes(payload)); //? Comparo payload de los temperamentos
-      const filterDb = []; //? Acá guardo los temp de base de datos
+          : allDogs.filter((dog) => dog.temperament?.includes(payload));
+      const filterDb = [];
       allDogs.forEach((dog) => {
-        //? Busco si el id es string (UUID)
         if (typeof dog.id === "string") {
           dog.temperament?.forEach((tempDb) => {
-            if (tempDb === payload) filterDb.push(tempDb); //? Guardo los temp de perros de base de datos
+            if (tempDb === payload) filterDb.push(tempDb);
           });
         }
       });
       return {
         ...state,
-        dogs: filterDog.concat(filterDb), //? Retorno todos los temp de API y los nuevos de DB juntos en un array
+        dogs: filterDog.concat(filterDb),
         error: null,
       };
+
     case FILTER_BY_WEIGHT:
-      const sortedDogsByWeight = [...state.dogs]; //? Guardo copia de estado para luego hacer el ordenamiento en ella
-      const weightAscendingOrder = payload === "min"; //? El orden será true(asc) o false(des)
+      const sortedDogsByWeight = [...state.dogs];
 
       sortedDogsByWeight.sort((first, second) => {
-        //? Función para hace el ordenar perros segun el peso usando sort
         const parseWeight = (weight) => {
           const parts = weight.split(" - ");
-          const average = parts.reduce((sum, part) => sum + parseInt(part), 0); //? Quito los espacios y guiones
-          //? Guardo el promedio del peso paraseado y si no se puede parsear guarda al final
+          const average = parts.reduce((sum, part) => sum + parseInt(part), 0);
           return isNaN(average) ? Infinity : average;
         };
-        const weightFirst = parseWeight(first.weight); //? Guardo los dos pesos de los dos parámetros
-        const weightSecond = parseWeight(second.weight); //? para luego compararlos y setear el orden
-
-        if (weightAscendingOrder) {
-          //? Si el orden elegido es min(true) será ascendente
-          return weightFirst - weightSecond;
-        } else {
-          return weightSecond - weightFirst; //? de lo contrario será descendente
-        }
+        const weightFirst = parseWeight(first.weight);
+        const weightSecond = parseWeight(second.weight);
+        return weightFirst - weightSecond;
       });
       return {
         ...state,
         dogs: sortedDogsByWeight,
         error: null,
       };
+
     case FILTER_BY_HEIGHT:
       const sortedDogsByHeight = [...state.dogs];
-      const heightAscendingOrder = payload === "min";
 
       sortedDogsByHeight.sort((first, second) => {
         const parseHeight = (height) => {
@@ -131,35 +127,32 @@ const reducer = (state = initialState, { type, payload }) => {
         const heightFirst = parseHeight(first.height);
         const heightSecond = parseHeight(second.height);
 
-        if (heightAscendingOrder) {
-          return heightFirst - heightSecond;
-        } else {
-          return heightSecond - heightFirst;
-        }
+        return heightFirst - heightSecond;
       });
       return {
         ...state,
         dogs: sortedDogsByHeight,
         error: null,
       };
+
     case FILTER_BY_ORIGIN:
       const originDogs = state.dogsCopy;
       const filterDogs = originDogs.filter((dog) =>
-        payload === "created" ? dog.createInDb : !dog.createInDb
+        payload === "api" ? dog.createInDb : !dog.createInDb
       );
       return {
         ...state,
         dogs: filterDogs,
       };
+
     case FILTER_BY_NAME:
       const sortedDogs = [...state.dogs];
-      const sortOrder = payload === "Asc" ? 1 : -1;
       sortedDogs.sort((dogA, dogB) => {
         if (dogA.name > dogB.name) {
-          return 1 * sortOrder;
+          return 1;
         }
         if (dogB.name > dogA.name) {
-          return -1 * sortOrder;
+          return -1;
         }
         return 0;
       });
@@ -167,17 +160,29 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         dogs: sortedDogs,
       };
-    case DELETE_DOG:
-      const copyOfDogs = state.dogsCopy.filter((dog) => dog.id !== payload);
+
+    case FILTER_BY_AGE:
+      const sortedDogsByAge = [...state.dogs];
+      sortedDogsByAge.sort((first, second) => {
+        const parseAge = (age) => {
+          const parts = age.split(" - ");
+          const average = parts.reduce((sum, part) => sum + parseInt(part), 0);
+          return isNaN(average) ? Infinity : average;
+        };
+        const ageFirst = parseAge(first.age);
+        const ageSecond = parseAge(second.age);
+
+        return ageFirst - ageSecond;
+      });
       return {
         ...state,
-        dogs: copyOfDogs,
-        dogsCopy: copyOfDogs,
+        dogs: sortedDogsByAge,
       };
-    case DELETE_DOG_ID:
+
+    case RESET_SELECTED_DOG:
       return {
         ...state,
-        details: [],
+        selectedDog: null,
       };
     default:
       return { ...state };
