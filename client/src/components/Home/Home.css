@@ -31,3 +31,20 @@
 .loading-spinner p {
   font-size: 18px;
 }
+
+
+button {
+    margin-top:50px;
+    margin: 20px 3px 3px 3px ;
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: none;
+    background-color: #3352bf;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+  background-color: #223785;
+  scale: 1.1
+}

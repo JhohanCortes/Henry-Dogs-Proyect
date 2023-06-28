@@ -12,8 +12,8 @@ import {
   FILTER_BY_ORIGIN,
   FILTER_BY_NAME,
   FILTER_BY_AGE,
-  SET_RANDOM_BREED,
-  FILTER_BY_CREATED,
+  INVERT_DOGS_STATE,
+  CLEAR_FILTERS,
   RESET_SELECTED_DOG, // Nueva acción de reset
 } from "./actions-types";
 import axios from "axios";
@@ -88,26 +88,6 @@ export const postDog = (dog) => {
   };
 };
 
-export const getRandomBreed = () => {
-  return async (dispatch) => {
-    try {
-      const response = await axios.get("http://localhost:3001/dogs/random");
-      const randomBreed = response.data; // Suponiendo que la API devuelve un objeto con los datos de la raza de perro aleatoria
-      // Realiza alguna acción con la raza de perro aleatoria obtenida, como almacenarla en el estado de Redux
-      dispatch({ type: SET_RANDOM_BREED, payload: randomBreed });
-    } catch (error) {
-      console.error("Error occurred while fetching random breed:", error);
-    }
-  };
-};
-
-export const filterByCreated = (payload) => {
-  return {
-    type: FILTER_BY_CREATED,
-    payload,
-  };
-};
-
 export const FilterByTemperament = (payload) => {
   return {
     type: FILTER_BY_TEMPERAMENT,
@@ -147,6 +127,18 @@ export const FilterByAge = (payload) => {
     payload,
   };
 };
+
+export const invertDogsState = () => {
+  return {
+    type: INVERT_DOGS_STATE
+  }
+}
+
+export const clearFilters = () => {
+  return {
+    type: CLEAR_FILTERS
+  }
+}
 
 export const resetSelectedDog = () => {
   return {

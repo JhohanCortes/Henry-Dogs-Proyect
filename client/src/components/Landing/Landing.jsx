@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import dogImage from "../../recourses/pngwing.com.png";
 import "./Landing.css";
 

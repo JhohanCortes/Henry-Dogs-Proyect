@@ -9,10 +9,10 @@ import {
   FILTER_BY_HEIGHT,
   FILTER_BY_ORIGIN,
   FILTER_BY_NAME,
-  SET_RANDOM_BREED,
-  FILTER_BY_CREATED,
   FILTER_BY_AGE,
-  RESET_SELECTED_DOG, // Nueva acción de reset
+  INVERT_DOGS_STATE,
+  CLEAR_FILTERS,
+  RESET_SELECTED_DOG, // Nueva acción de reset  
 } from "../actions/actions-types.js";
 
 // acá se hacen los cambios de estado y asi mismo actualizar el mismo
@@ -60,21 +60,6 @@ const reducer = (state = initialState, { type, payload }) => {
         dogs: [...state.dogs, payload],
       };
 
-    case SET_RANDOM_BREED:
-      return {
-        ...state,
-        selectedDog: payload,
-      };
-
-    case FILTER_BY_CREATED:
-      const createdDogs = state.dogsCopy.filter(
-        (dog) => dog.createInDb === payload
-      );
-      return {
-        ...state,
-        dogs: createdDogs,
-      };
-
     case FILTER_BY_TEMPERAMENT:
       const allDogs = state.dogsCopy;
       const filterDog =
@@ -91,7 +76,7 @@ const reducer = (state = initialState, { type, payload }) => {
       });
       return {
         ...state,
-        dogs: filterDog.concat(filterDb),
+        dogs: filterDog.concat(filterDb), // Concatenar los perros filtrados y los temperamentos encontrados
         error: null,
       };
 
@@ -101,83 +86,141 @@ const reducer = (state = initialState, { type, payload }) => {
       sortedDogsByWeight.sort((first, second) => {
         const parseWeight = (weight) => {
           const parts = weight.split(" - ");
-          const average = parts.reduce((sum, part) => sum + parseInt(part), 0);
-          return isNaN(average) ? Infinity : average;
+          const minWeight = parseInt(parts[0]);
+          const maxWeight = parseInt(parts[1]);
+
+          return {
+            min: isNaN(minWeight) ? Infinity : minWeight,
+            max: isNaN(maxWeight) ? Infinity : maxWeight,
+          };
         };
+
         const weightFirst = parseWeight(first.weight);
         const weightSecond = parseWeight(second.weight);
-        return weightFirst - weightSecond;
+
+        if (payload === "asc") {
+          return weightFirst.min - weightSecond.min;
+        } else if (payload === "desc") {
+          return weightSecond.max - weightFirst.max;
+        }
+
+        return 0;
       });
+
       return {
         ...state,
         dogs: sortedDogsByWeight,
-        error: null,
       };
 
-    case FILTER_BY_HEIGHT:
-      const sortedDogsByHeight = [...state.dogs];
-
-      sortedDogsByHeight.sort((first, second) => {
-        const parseHeight = (height) => {
-          const parts = height.split(" - ");
-          const average =
-            parts.reduce((sum, part) => sum + parseInt(part), 0) / parts.length;
-          return isNaN(average) ? -1 : average;
+      case FILTER_BY_HEIGHT:
+        const sortedDogsByHeight = [...state.dogs];
+    
+        sortedDogsByHeight.sort((first, second) => {
+          const parseHeight = (height) => {
+            const parts = height.split(" - ");
+            const minHeight = parseInt(parts[0]);
+            const maxHeight = parseInt(parts[1]);
+    
+            return {
+              min: isNaN(minHeight) ? -1 : minHeight,
+              max: isNaN(maxHeight) ? -1 : maxHeight,
+            };
+          };
+    
+          const heightFirst = parseHeight(first.height);
+          const heightSecond = parseHeight(second.height);
+    
+          if (payload === "asc") {
+            return heightFirst.min - heightSecond.min;
+          } else if (payload === "desc") {
+            return heightSecond.max - heightFirst.max;
+          }
+    
+          return 0;
+        });
+    
+        return {
+          ...state,
+          dogs: sortedDogsByHeight,
         };
-        const heightFirst = parseHeight(first.height);
-        const heightSecond = parseHeight(second.height);
 
-        return heightFirst - heightSecond;
+
+        case FILTER_BY_NAME:
+          let sortedDogs = [...state.dogs];
+          if (payload === "asc") {
+            sortedDogs.sort((dogA, dogB) => dogA.name.localeCompare(dogB.name));
+          } else if (payload === "desc") {
+            sortedDogs.sort((dogA, dogB) => dogB.name.localeCompare(dogA.name));
+          }
+          return {
+            ...state,
+            dogs: sortedDogs,
+          };
+        
+
+    case FILTER_BY_AGE:
+      const sortedDogsByAge = [...state.dogs];
+
+      sortedDogsByAge.sort((first, second) => {
+        const parseAge = (age) => {
+          const parts = age.split(" - ");
+          const minAge = parseInt(parts[0]);
+          const maxAge = parseInt(parts[1]);
+
+          return {
+            min: isNaN(minAge) ? Infinity : minAge,
+            max: isNaN(maxAge) ? -Infinity : maxAge,
+          };
+        };
+
+        const ageFirst = parseAge(first.age);
+        const ageSecond = parseAge(second.age);
+
+        if (payload === "asc") {
+          return ageFirst.min - ageSecond.min;
+        } else if (payload === "desc") {
+          return ageSecond.max - ageFirst.max;
+        }
+
+        return 0; // No se especificó un payload válido, no se realiza ordenamiento
       });
+
       return {
         ...state,
-        dogs: sortedDogsByHeight,
-        error: null,
+        dogs: sortedDogsByAge,
       };
 
+      
     case FILTER_BY_ORIGIN:
-      const originDogs = state.dogsCopy;
-      const filterDogs = originDogs.filter((dog) =>
-        payload === "api" ? dog.createInDb : !dog.createInDb
-      );
+      let filterDogs = state.dogsCopy;
+
+      if (payload === "all") {
+        return {
+          ...state,
+          dogs: filterDogs,
+        };
+      } else {
+        filterDogs = filterDogs.filter((dog) =>
+          payload === "created" ? dog.createInDb : !dog.createInDb
+        );
+      }
+
       return {
         ...state,
         dogs: filterDogs,
       };
 
-    case FILTER_BY_NAME:
-      const sortedDogs = [...state.dogs];
-      sortedDogs.sort((dogA, dogB) => {
-        if (dogA.name > dogB.name) {
-          return 1;
-        }
-        if (dogB.name > dogA.name) {
-          return -1;
-        }
-        return 0;
-      });
-      return {
-        ...state,
-        dogs: sortedDogs,
-      };
-
-    case FILTER_BY_AGE:
-      const sortedDogsByAge = [...state.dogs];
-      sortedDogsByAge.sort((first, second) => {
-        const parseAge = (age) => {
-          const parts = age.split(" - ");
-          const average = parts.reduce((sum, part) => sum + parseInt(part), 0);
-          return isNaN(average) ? Infinity : average;
+      case INVERT_DOGS_STATE:
+        return {
+          ...state,
+          dogs: [...state.dogs].reverse(),
         };
-        const ageFirst = parseAge(first.age);
-        const ageSecond = parseAge(second.age);
 
-        return ageFirst - ageSecond;
-      });
+      case CLEAR_FILTERS:
       return {
         ...state,
-        dogs: sortedDogsByAge,
-      };
+        dogs: state.dogsCopy
+      }
 
     case RESET_SELECTED_DOG:
       return {

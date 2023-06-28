@@ -70,11 +70,11 @@ const Home = () => {
   const [selectedTemperament, setSelectedTemperament] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const cardsToShow = 16; // Establece la cantidad de tarjetas a mostrar
+  const cardsToShow = 8; // Establece la cantidad de tarjetas a mostrar
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(getDogs());
+      await dispatch(getDogs())
       await dispatch(getTemperaments());
       setIsLoading(false);
     };

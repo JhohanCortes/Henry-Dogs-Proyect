@@ -30,21 +30,24 @@ const Form = () => {
     const errors = {};
     if (!/^[a-zA-Z\s]{5,25}$/.test(name))
       errors.name =
-        "Breed name must have at least 5 characters and a maximum of 25 characters";
-    if (ageMin > ageMax)
+        "Breed name must have at least 5 characters and a maximum of 25 characters, you not can use numbers(1234), or simbols (!,#@)";
+    if (+ageMin > +ageMax)
       errors.age = "Minimum age cannot be greater than the maximum";
-    if (heightMin > heightMax)
+    if (+heightMin > +heightMax)
       errors.height = "Minimum height cannot be greater than the maximum";
-    if (weightMin > weightMax)
+    if (+weightMin > +weightMax)
       errors.weight = "Minimum weight cannot exceed the maximum";
     return errors;
   };
+  
 
   useEffect(() => {
     dispatch(getTemperaments());
   }, [dispatch]);
 
-  const temperaments = useSelector((state) => state.temperaments);
+
+  // estado que manejará filtro de temperamentos
+  const temperaments = useSelector((state) => state.temperaments);    
   const [selectedTemps, setSelectedTemps] = useState([]);
   const [filter] = useState("");
   const filteredTemps = temperaments?.filter((temp) =>

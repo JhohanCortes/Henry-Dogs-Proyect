@@ -180,3 +180,7 @@
     align-items: flex-start;
   }
 }
+
+.filter-menu p{
+  color: #182555
+}
